@@ -4,7 +4,7 @@ include(target_import_base)
 include(target_import_bsp_interface)
 include(target_import_stm32h743iit6_hal)
 
-set(ProjectName stm32h743iit6-timer-timer)
+set(ProjectName stm32h743iit6-timer)
 project(${ProjectName})
 enable_language(ASM)
 set(CMAKE_CXX_STANDARD 20)
