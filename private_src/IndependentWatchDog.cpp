@@ -1,15 +1,8 @@
 #include "IndependentWatchDog.h"
-#include <base/Initializer.h>
 #include <base/math/Fraction.h>
 
 using namespace hal;
 using namespace base;
-
-static base::Initializer _initializer{
-    []()
-    {
-        hal::IndependentWatchDog::Instance();
-    }};
 
 void IndependentWatchDog::Initialize()
 {
