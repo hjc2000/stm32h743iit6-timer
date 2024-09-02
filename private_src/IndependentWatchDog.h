@@ -1,5 +1,7 @@
 #pragma once
 #include <base/SingletonGetter.h>
+#include <base/unit/Hz.h>
+#include <base/unit/SecondPeriod.h>
 #include <bsp-interface/di/interrupt.h>
 #include <bsp-interface/IIndependentWatchDog.h>
 #include <chrono>
@@ -19,10 +21,10 @@ namespace hal
 
         /// @brief 内部时钟信号的频率。还要经过预分频才会输入到计数器。
         /// @return
-        uint32_t InnerClockSourceFreq_Hz() const
+        base::Hz InnerClockSourceFreq() const
         {
             // 独立看门狗具有 40 kHz 的内部时钟。
-            return 40 * 1000;
+            return base::Hz{40 * 1000};
         }
 
         void Initialize();

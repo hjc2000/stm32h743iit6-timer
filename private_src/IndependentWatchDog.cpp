@@ -1,5 +1,4 @@
 #include "IndependentWatchDog.h"
-#include <base/math/Fraction.h>
 
 using namespace hal;
 using namespace base;
@@ -13,17 +12,15 @@ void IndependentWatchDog::Initialize()
 
 std::chrono::milliseconds IndependentWatchDog::WatchDogTimeoutDuration() const
 {
-    Fraction count_freq = Fraction{InnerClockSourceFreq_Hz()} / _config.GetPrescalerByUint32();
-    Fraction count_interval = 1 / count_freq;
-    Fraction timeout_in_seconds = _config.ReloadValue() * count_interval;
-    Fraction timeout_in_milliseconds = timeout_in_seconds * 1000;
-    return std::chrono::milliseconds{timeout_in_milliseconds.Div()};
+    base::Hz count_freq = InnerClockSourceFreq() / _config.GetPrescalerByUint32();
+    base::SecondPeriod count_period{count_freq};
+    base::SecondPeriod timeout = _config.ReloadValue() * count_period;
+    return static_cast<std::chrono::milliseconds>(timeout);
 }
 
 void IndependentWatchDog::SetWatchDogTimeoutDuration(std::chrono::milliseconds value)
 {
-    Fraction inner_clock_source_freq = InnerClockSourceFreq_Hz();
-    Fraction inner_clock_source_interval = 1 / inner_clock_source_freq;
+    Fraction inner_clock_source_interval = 1 / static_cast<base::Fraction>(InnerClockSourceFreq());
     Fraction timeout_in_milliseconds = value.count();
     Fraction timeout = timeout_in_milliseconds / 1000;
 
