@@ -15,7 +15,7 @@ namespace hal
         IndependentWatchDogConfig(IWDG_InitTypeDef const &o);
         IndependentWatchDogConfig &operator=(IWDG_InitTypeDef const &o);
 
-        operator IWDG_InitTypeDef()
+        operator IWDG_InitTypeDef() const
         {
             return _config_handle;
         }
