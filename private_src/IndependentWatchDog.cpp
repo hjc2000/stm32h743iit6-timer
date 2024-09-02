@@ -20,20 +20,18 @@ std::chrono::milliseconds IndependentWatchDog::WatchDogTimeoutDuration() const
 
 void IndependentWatchDog::SetWatchDogTimeoutDuration(std::chrono::milliseconds value)
 {
-    Fraction inner_clock_source_interval = 1 / static_cast<base::Fraction>(InnerClockSourceFreq());
-    Fraction timeout_in_milliseconds = value.count();
-    Fraction timeout = timeout_in_milliseconds / 1000;
+    base::Seconds inner_clock_source_interval{InnerClockSourceFreq()};
+    base::Seconds timeout{value};
 
     // 所需的 (分频器计数值 + 计数器计数值)
-    Fraction total_count = timeout / inner_clock_source_interval;
-    int64_t int_total_count = total_count.Div();
+    int64_t total_count = static_cast<int64_t>(timeout / inner_clock_source_interval);
 
     // 让计数器重装载值尽量大，溢出了就增大分频系数
     for (uint16_t i = 2; i <= 8; i++)
     {
         // 从 2^2 = 4 开始，到 2^8 = 256，通过移位实现幂。i 代表的是 2 的幂
         uint16_t prescaler_value = static_cast<uint16_t>(1 << i);
-        _config.SetReloadValue(int_total_count / prescaler_value);
+        _config.SetReloadValue(total_count / prescaler_value);
         if (_config.ReloadValue() > 0X0FFF && i == 8)
         {
             // 最大分频和最大计数都无法表示这个时间，就按照能达到的最大值来。
