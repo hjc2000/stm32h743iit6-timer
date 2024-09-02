@@ -1,7 +1,7 @@
 #pragma once
 #include <base/SingletonGetter.h>
 #include <base/unit/Hz.h>
-#include <base/unit/SecondPeriod.h>
+#include <base/unit/Seconds.h>
 #include <bsp-interface/di/interrupt.h>
 #include <bsp-interface/IIndependentWatchDog.h>
 #include <chrono>

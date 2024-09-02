@@ -13,8 +13,8 @@ void IndependentWatchDog::Initialize()
 std::chrono::milliseconds IndependentWatchDog::WatchDogTimeoutDuration() const
 {
     base::Hz count_freq = InnerClockSourceFreq() / _config.GetPrescalerByUint32();
-    base::SecondPeriod count_period{count_freq};
-    base::SecondPeriod timeout = _config.ReloadValue() * count_period;
+    base::Seconds count_period{count_freq};
+    base::Seconds timeout = _config.ReloadValue() * count_period;
     return static_cast<std::chrono::milliseconds>(timeout);
 }
 
