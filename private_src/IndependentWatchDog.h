@@ -1,5 +1,5 @@
 #pragma once
-#include <base/SingletonGetter.h>
+#include <base/di/SingletonGetter.h>
 #include <base/unit/Hz.h>
 #include <base/unit/Seconds.h>
 #include <bsp-interface/di/interrupt.h>
