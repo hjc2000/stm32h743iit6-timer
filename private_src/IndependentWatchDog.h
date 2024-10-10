@@ -1,4 +1,5 @@
 #pragma once
+#include <base/define.h>
 #include <base/di/SingletonGetter.h>
 #include <base/unit/Hz.h>
 #include <base/unit/Seconds.h>
@@ -30,9 +31,10 @@ namespace hal
         void Initialize();
 
     public:
-        static IndependentWatchDog &Instance()
+        static_function IndependentWatchDog &Instance()
         {
-            class Getter : public base::SingletonGetter<IndependentWatchDog>
+            class Getter :
+                public base::SingletonGetter<IndependentWatchDog>
             {
             public:
                 std::unique_ptr<IndependentWatchDog> Create() override
