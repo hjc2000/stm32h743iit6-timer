@@ -10,6 +10,15 @@ extern "C"
     {
         DI_Delayer().Delay(std::chrono::milliseconds{ms});
     }
+
+    void SysTick_Handler()
+    {
+        HAL_IncTick();
+        if (bsp::SysTickClock::Instance()._elapsed_handler)
+        {
+            bsp::SysTickClock::Instance()._elapsed_handler();
+        }
+    }
 }
 
 bsp::SysTickClock &bsp::SysTickClock::Instance()
@@ -55,4 +64,9 @@ uint32_t bsp::SysTickClock::CurrentValue() const
 {
     uint32_t masked = SysTick->VAL & SysTick_VAL_CURRENT_Msk;
     return masked >> SysTick_VAL_CURRENT_Pos;
+}
+
+void bsp::SysTickClock::SetElapsedHandler(std::function<void()> func)
+{
+    _elapsed_handler = func;
 }

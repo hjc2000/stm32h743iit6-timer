@@ -6,6 +6,11 @@
 #include <hal.h>
 #include <stdint.h>
 
+extern "C"
+{
+    void SysTick_Handler();
+}
+
 namespace bsp
 {
     /// @brief stm32h743 的 SysTick 不支持设置时钟源。他只能与 CPU 相同频率，
@@ -15,6 +20,10 @@ namespace bsp
     {
     private:
         SysTickClock() = default;
+
+        std::function<void()> _elapsed_handler;
+
+        friend void ::SysTick_Handler();
 
     public:
         static_function SysTickClock &Instance();
@@ -39,5 +48,9 @@ namespace bsp
         ///
         /// @return 当前计数值
         uint32_t CurrentValue() const override;
+
+        /// @brief 定时时间到处理函数。
+        /// @param func
+        void SetElapsedHandler(std::function<void()> func);
     };
 } // namespace bsp
