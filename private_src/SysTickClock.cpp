@@ -68,5 +68,9 @@ uint32_t bsp::SysTickClock::CurrentValue() const
 
 void bsp::SysTickClock::SetElapsedHandler(std::function<void()> func)
 {
-    _elapsed_handler = func;
+    DI_InterruptSwitch().DoGlobalCriticalWork(
+        [&]()
+        {
+            _elapsed_handler = func;
+        });
 }

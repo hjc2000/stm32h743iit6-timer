@@ -50,6 +50,8 @@ namespace bsp
         uint32_t CurrentValue() const override;
 
         /// @brief 定时时间到处理函数。
+        /// @warning 实现者需要将本函数实现为线程安全和可重入。最简单的方法就是在本函数的
+        /// 操作期间禁用全局中断。
         /// @param func
         void SetElapsedHandler(std::function<void()> func);
     };
