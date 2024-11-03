@@ -3,5 +3,5 @@
 
 bsp::ISysTick &DI_SysTick()
 {
-    return hal::SysTickClock::Instance();
+    return bsp::SysTickClock::Instance();
 }

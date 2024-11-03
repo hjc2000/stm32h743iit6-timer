@@ -6,7 +6,7 @@
 #include <hal.h>
 #include <stdint.h>
 
-namespace hal
+namespace bsp
 {
     /// @brief stm32h743 的 SysTick 不支持设置时钟源。他只能与 CPU 相同频率，
     /// 即使用系统时钟信号。
@@ -40,4 +40,4 @@ namespace hal
         /// @return 当前计数值
         uint32_t CurrentValue() const override;
     };
-} // namespace hal
+} // namespace bsp
