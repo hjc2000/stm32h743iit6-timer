@@ -3,22 +3,7 @@
 using namespace hal;
 using namespace base;
 
-void IndependentWatchDog::Initialize()
-{
-    _handle.Instance = HardwareInstance();
-    _handle.Init = _config;
-    HAL_IWDG_Init(&_handle);
-}
-
-std::chrono::milliseconds IndependentWatchDog::WatchDogTimeoutDuration() const
-{
-    base::Hz count_freq = InnerClockSourceFreq() / _config.GetPrescalerByUint32();
-    base::Seconds count_period{count_freq};
-    base::Seconds timeout = _config.ReloadValue() * count_period;
-    return static_cast<std::chrono::milliseconds>(timeout);
-}
-
-void IndependentWatchDog::SetWatchDogTimeoutDuration(std::chrono::milliseconds value)
+void IndependentWatchDog::Open(std::chrono::milliseconds value)
 {
     base::Seconds inner_clock_source_interval{InnerClockSourceFreq()};
     base::Seconds timeout{value};
@@ -48,7 +33,17 @@ void IndependentWatchDog::SetWatchDogTimeoutDuration(std::chrono::milliseconds v
         }
     }
 
-    Initialize();
+    _handle.Instance = HardwareInstance();
+    _handle.Init = _config;
+    HAL_IWDG_Init(&_handle);
+}
+
+std::chrono::milliseconds IndependentWatchDog::Timeout() const
+{
+    base::Hz count_freq = InnerClockSourceFreq() / _config.GetPrescalerByUint32();
+    base::Seconds count_period{count_freq};
+    base::Seconds timeout = _config.ReloadValue() * count_period;
+    return static_cast<std::chrono::milliseconds>(timeout);
 }
 
 void IndependentWatchDog::Feed()

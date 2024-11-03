@@ -4,7 +4,7 @@
 #include <base/unit/Hz.h>
 #include <base/unit/Seconds.h>
 #include <bsp-interface/di/interrupt.h>
-#include <bsp-interface/IIndependentWatchDog.h>
+#include <bsp-interface/timer/IIndependentWatchDog.h>
 #include <chrono>
 #include <IndependentWatchDogConfig.h>
 
@@ -27,8 +27,6 @@ namespace hal
             // 独立看门狗具有 40 kHz 的内部时钟。
             return base::Hz{40 * 1000};
         }
-
-        void Initialize();
 
     public:
         static_function IndependentWatchDog &Instance()
@@ -62,8 +60,19 @@ namespace hal
             return IWDG1;
         }
 
-        std::chrono::milliseconds WatchDogTimeoutDuration() const override;
-        void SetWatchDogTimeoutDuration(std::chrono::milliseconds value) override;
+        /// @brief 打开看门狗定时器。
+        /// @param timeout 看门狗超时时间。
+        void Open(std::chrono::milliseconds value) override;
+
+        /// @brief 关闭看门狗定时器。
+        void Close()
+        {
+        }
+
+        /// @brief 看门狗超时时间。
+        /// @return
+        std::chrono::milliseconds Timeout() const override;
+
         void Feed() override;
     };
 } // namespace hal
