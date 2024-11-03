@@ -8,7 +8,7 @@
 #include <chrono>
 #include <IndependentWatchDogConfig.h>
 
-namespace hal
+namespace bsp
 {
     /// @brief 独立看门狗。
     /// @note 所谓独立看门狗就是具有自己的内部时钟源，不依赖单片机的系统时钟。
@@ -18,42 +18,14 @@ namespace hal
     {
     private:
         IWDG_HandleTypeDef _handle{};
-        IndependentWatchDogConfig _config{};
+        bsp::IndependentWatchDogConfig _config{};
 
         /// @brief 内部时钟信号的频率。还要经过预分频才会输入到计数器。
         /// @return
-        base::Hz InnerClockSourceFreq() const
-        {
-            // 独立看门狗具有 40 kHz 的内部时钟。
-            return base::Hz{40 * 1000};
-        }
+        base::Hz InnerClockSourceFreq() const;
 
     public:
-        static_function IndependentWatchDog &Instance()
-        {
-            class Getter :
-                public base::SingletonGetter<IndependentWatchDog>
-            {
-            public:
-                std::unique_ptr<IndependentWatchDog> Create() override
-                {
-                    return std::unique_ptr<IndependentWatchDog>{new IndependentWatchDog{}};
-                }
-
-                void Lock() override
-                {
-                    DI_InterruptSwitch().DisableGlobalInterrupt();
-                }
-
-                void Unlock() override
-                {
-                    DI_InterruptSwitch().EnableGlobalInterrupt();
-                }
-            };
-
-            Getter g;
-            return g.Instance();
-        }
+        static_function IndependentWatchDog &Instance();
 
         IWDG_TypeDef *HardwareInstance()
         {
@@ -65,14 +37,13 @@ namespace hal
         void Open(std::chrono::milliseconds value) override;
 
         /// @brief 关闭看门狗定时器。
-        void Close()
-        {
-        }
+        void Close();
 
         /// @brief 看门狗超时时间。
         /// @return
         std::chrono::milliseconds Timeout() const override;
 
+        /// @brief 喂狗
         void Feed() override;
     };
-} // namespace hal
+} // namespace bsp

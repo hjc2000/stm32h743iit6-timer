@@ -2,7 +2,7 @@
 #include <hal.h>
 #include <stdint.h>
 
-namespace hal
+namespace bsp
 {
     /// @brief 看门狗预分频器分频系数
     enum class IndependentWatchDogConfig_Prescaler
@@ -58,4 +58,4 @@ namespace hal
         uint32_t WindowValue() const;
         void SetWindowValue(uint32_t value);
     };
-} // namespace hal
+} // namespace bsp

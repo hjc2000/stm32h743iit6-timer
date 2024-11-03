@@ -1,9 +1,39 @@
 #include "IndependentWatchDog.h"
+#include <bsp-interface/di/console.h>
 
-using namespace hal;
-using namespace base;
+base::Hz bsp::IndependentWatchDog::InnerClockSourceFreq() const
+{
+    // 独立看门狗具有 40 kHz 的内部时钟。
+    return base::Hz{40 * 1000};
+}
 
-void IndependentWatchDog::Open(std::chrono::milliseconds value)
+bsp::IndependentWatchDog &bsp::IndependentWatchDog::Instance()
+{
+    class Getter :
+        public base::SingletonGetter<IndependentWatchDog>
+    {
+    public:
+        std::unique_ptr<IndependentWatchDog> Create() override
+        {
+            return std::unique_ptr<IndependentWatchDog>{new IndependentWatchDog{}};
+        }
+
+        void Lock() override
+        {
+            DI_InterruptSwitch().DisableGlobalInterrupt();
+        }
+
+        void Unlock() override
+        {
+            DI_InterruptSwitch().EnableGlobalInterrupt();
+        }
+    };
+
+    Getter g;
+    return g.Instance();
+}
+
+void bsp::IndependentWatchDog::Open(std::chrono::milliseconds value)
 {
     base::Seconds inner_clock_source_interval{InnerClockSourceFreq()};
     base::Seconds timeout{value};
@@ -21,7 +51,7 @@ void IndependentWatchDog::Open(std::chrono::milliseconds value)
         {
             // 最大分频和最大计数都无法表示这个时间，就按照能达到的最大值来。
             _config.SetReloadValue(0X0FFF);
-            _config.SetPrescaler(IndependentWatchDogConfig_Prescaler::Div256);
+            _config.SetPrescaler(bsp::IndependentWatchDogConfig_Prescaler::Div256);
             break;
         }
 
@@ -38,7 +68,12 @@ void IndependentWatchDog::Open(std::chrono::milliseconds value)
     HAL_IWDG_Init(&_handle);
 }
 
-std::chrono::milliseconds IndependentWatchDog::Timeout() const
+void bsp::IndependentWatchDog::Close()
+{
+    DI_Console().WriteError("看门狗一旦开启就无法关闭");
+}
+
+std::chrono::milliseconds bsp::IndependentWatchDog::Timeout() const
 {
     base::Hz count_freq = InnerClockSourceFreq() / _config.GetPrescalerByUint32();
     base::Seconds count_period{count_freq};
@@ -46,7 +81,7 @@ std::chrono::milliseconds IndependentWatchDog::Timeout() const
     return static_cast<std::chrono::milliseconds>(timeout);
 }
 
-void IndependentWatchDog::Feed()
+void bsp::IndependentWatchDog::Feed()
 {
     HAL_IWDG_Refresh(&_handle);
 }

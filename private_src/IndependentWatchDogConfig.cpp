@@ -1,9 +1,7 @@
 #include "IndependentWatchDogConfig.h"
 #include <stdexcept>
 
-using namespace hal;
-
-hal::IndependentWatchDogConfig::IndependentWatchDogConfig()
+bsp::IndependentWatchDogConfig::IndependentWatchDogConfig()
 {
     /*
      * 设置为最大值，这样才能成为独立看门狗，否则是窗口看门狗。
@@ -12,12 +10,12 @@ hal::IndependentWatchDogConfig::IndependentWatchDogConfig()
     SetWindowValue(0x0FFF);
 }
 
-IndependentWatchDogConfig::IndependentWatchDogConfig(IWDG_InitTypeDef const &o)
+bsp::IndependentWatchDogConfig::IndependentWatchDogConfig(IWDG_InitTypeDef const &o)
 {
     *this = o;
 }
 
-IndependentWatchDogConfig &IndependentWatchDogConfig::operator=(IWDG_InitTypeDef const &o)
+bsp::IndependentWatchDogConfig &bsp::IndependentWatchDogConfig::operator=(IWDG_InitTypeDef const &o)
 {
     _config_handle = o;
     return *this;
@@ -25,17 +23,17 @@ IndependentWatchDogConfig &IndependentWatchDogConfig::operator=(IWDG_InitTypeDef
 
 #pragma region 分频系数
 
-IndependentWatchDogConfig_Prescaler IndependentWatchDogConfig::Prescaler() const
+bsp::IndependentWatchDogConfig_Prescaler bsp::IndependentWatchDogConfig::Prescaler() const
 {
-    return static_cast<IndependentWatchDogConfig_Prescaler>(_config_handle.Prescaler);
+    return static_cast<bsp::IndependentWatchDogConfig_Prescaler>(_config_handle.Prescaler);
 }
 
-void IndependentWatchDogConfig::SetPrescaler(IndependentWatchDogConfig_Prescaler value)
+void bsp::IndependentWatchDogConfig::SetPrescaler(IndependentWatchDogConfig_Prescaler value)
 {
     _config_handle.Prescaler = static_cast<uint32_t>(value);
 }
 
-uint8_t IndependentWatchDogConfig::GetPrescalerByPow() const
+uint8_t bsp::IndependentWatchDogConfig::GetPrescalerByPow() const
 {
     switch (Prescaler())
     {
@@ -74,7 +72,7 @@ uint8_t IndependentWatchDogConfig::GetPrescalerByPow() const
     }
 }
 
-void IndependentWatchDogConfig::SetPrescalerByPow(uint8_t pow)
+void bsp::IndependentWatchDogConfig::SetPrescalerByPow(uint8_t pow)
 {
     auto power_to_prescaler = [](uint8_t pow) -> IndependentWatchDogConfig_Prescaler
     {
@@ -118,7 +116,7 @@ void IndependentWatchDogConfig::SetPrescalerByPow(uint8_t pow)
     SetPrescaler(power_to_prescaler(pow));
 }
 
-uint32_t IndependentWatchDogConfig::GetPrescalerByUint32() const
+uint32_t bsp::IndependentWatchDogConfig::GetPrescalerByUint32() const
 {
     switch (Prescaler())
     {
@@ -157,7 +155,7 @@ uint32_t IndependentWatchDogConfig::GetPrescalerByUint32() const
     }
 }
 
-void IndependentWatchDogConfig::SetPrescalerByUint32(uint32_t value)
+void bsp::IndependentWatchDogConfig::SetPrescalerByUint32(uint32_t value)
 {
     switch (value)
     {
@@ -205,22 +203,22 @@ void IndependentWatchDogConfig::SetPrescalerByUint32(uint32_t value)
 
 #pragma endregion
 
-uint32_t IndependentWatchDogConfig::ReloadValue() const
+uint32_t bsp::IndependentWatchDogConfig::ReloadValue() const
 {
     return _config_handle.Reload;
 }
 
-void IndependentWatchDogConfig::SetReloadValue(uint32_t value)
+void bsp::IndependentWatchDogConfig::SetReloadValue(uint32_t value)
 {
     _config_handle.Reload = value;
 }
 
-uint32_t hal::IndependentWatchDogConfig::WindowValue() const
+uint32_t bsp::IndependentWatchDogConfig::WindowValue() const
 {
     return _config_handle.Window;
 }
 
-void hal::IndependentWatchDogConfig::SetWindowValue(uint32_t value)
+void bsp::IndependentWatchDogConfig::SetWindowValue(uint32_t value)
 {
     _config_handle.Window = value;
 }
