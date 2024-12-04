@@ -13,6 +13,9 @@ extern "C"
 
     void SysTick_Handler()
     {
+        // 读取一下 CTRL，SysTick 的溢出标志位会自动清除。
+        SysTick->CTRL;
+
         HAL_IncTick();
         if (bsp::SysTickClock::Instance()._elapsed_handler)
         {
