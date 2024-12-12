@@ -1,6 +1,8 @@
 #pragma once
 #include <base/define.h>
 #include <base/di/SingletonGetter.h>
+#include <base/unit/Hz.h>
+#include <base/unit/Seconds.h>
 #include <bsp-interface/timer/ISysTick.h>
 #include <chrono>
 #include <hal.h>
@@ -22,8 +24,11 @@ namespace bsp
         SysTickClock() = default;
 
         std::function<void()> _elapsed_handler;
+        base::Seconds _system_time = 0;
 
         friend void ::SysTick_Handler();
+
+        void AddSystemTime();
 
     public:
         static_function SysTickClock &Instance();
@@ -54,5 +59,7 @@ namespace bsp
         /// 操作期间禁用全局中断。
         /// @param func
         void SetElapsedHandler(std::function<void()> func) override;
+
+        base::Seconds SystemTime() const;
     };
 } // namespace bsp

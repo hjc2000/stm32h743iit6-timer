@@ -15,13 +15,20 @@ extern "C"
     {
         // 读取一下 CTRL，SysTick 的溢出标志位会自动清除。
         SysTick->CTRL;
-
         HAL_IncTick();
+        bsp::SysTickClock::Instance().AddSystemTime();
         if (bsp::SysTickClock::Instance()._elapsed_handler)
         {
             bsp::SysTickClock::Instance()._elapsed_handler();
         }
     }
+}
+
+void bsp::SysTickClock::AddSystemTime()
+{
+    base::Seconds tick_interval{base::Hz{Frequency()}};
+    base::Seconds elapsed_period = tick_interval * ReloadValue();
+    _system_time += elapsed_period;
 }
 
 bsp::SysTickClock &bsp::SysTickClock::Instance()
@@ -76,4 +83,9 @@ void bsp::SysTickClock::SetElapsedHandler(std::function<void()> func)
         {
             _elapsed_handler = func;
         });
+}
+
+base::Seconds bsp::SysTickClock::SystemTime() const
+{
+    return _system_time;
 }
