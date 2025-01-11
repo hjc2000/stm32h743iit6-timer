@@ -72,7 +72,7 @@ void bsp::SysTickClock::SetElapsedHandler(std::function<void()> func)
     DI_TaskManager().SuspendAllTask();
     __disable_irq();
     base::Guard g{
-        [&]()
+        []()
         {
             DI_TaskManager().ResumeAllTask();
             __enable_irq();
