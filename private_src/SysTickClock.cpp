@@ -1,6 +1,7 @@
 #include "SysTickClock.h"
 #include <bsp-interface/di/delayer.h>
 #include <bsp-interface/di/interrupt.h>
+#include <bsp-interface/di/task.h>
 
 extern "C"
 {
@@ -34,22 +35,12 @@ void bsp::SysTickClock::AddSystemTime()
 bsp::SysTickClock &bsp::SysTickClock::Instance()
 {
     class Getter :
-        public base::SingletonGetter<SysTickClock>
+        public bsp::TaskSingletonGetter<SysTickClock>
     {
     public:
         std::unique_ptr<SysTickClock> Create() override
         {
             return std::unique_ptr<SysTickClock>{new SysTickClock{}};
-        }
-
-        void Lock() override
-        {
-            DI_DisableGlobalInterrupt();
-        }
-
-        void Unlock() override
-        {
-            DI_EnableGlobalInterrupt();
         }
     };
 
@@ -78,7 +69,15 @@ uint32_t bsp::SysTickClock::CurrentValue() const
 
 void bsp::SysTickClock::SetElapsedHandler(std::function<void()> func)
 {
-    bsp::GlobalInterruptGuard g;
+    DI_TaskManager().SuspendAllTask();
+    __disable_irq();
+    base::Guard g{
+        [&]()
+        {
+            DI_TaskManager().ResumeAllTask();
+            __enable_irq();
+        }};
+
     _elapsed_handler = func;
 }
 
