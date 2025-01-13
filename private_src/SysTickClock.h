@@ -1,6 +1,5 @@
 #pragma once
 #include <base/define.h>
-#include <base/di/SingletonGetter.h>
 #include <base/unit/Hz.h>
 #include <base/unit/Seconds.h>
 #include <bsp-interface/timer/ISysTick.h>

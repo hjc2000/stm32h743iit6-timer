@@ -1,6 +1,7 @@
 #include "SysTickClock.h"
 #include <bsp-interface/di/delayer.h>
 #include <bsp-interface/di/interrupt.h>
+#include <bsp-interface/TaskSingletonGetter.h>
 
 extern "C"
 {
@@ -34,22 +35,12 @@ void bsp::SysTickClock::AddSystemTime()
 bsp::SysTickClock &bsp::SysTickClock::Instance()
 {
     class Getter :
-        public base::SingletonGetter<SysTickClock>
+        public bsp::TaskSingletonGetter<SysTickClock>
     {
     public:
         std::unique_ptr<SysTickClock> Create() override
         {
             return std::unique_ptr<SysTickClock>{new SysTickClock{}};
-        }
-
-        void Lock() override
-        {
-            DI_DisableGlobalInterrupt();
-        }
-
-        void Unlock() override
-        {
-            DI_EnableGlobalInterrupt();
         }
     };
 

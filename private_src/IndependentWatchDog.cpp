@@ -1,5 +1,6 @@
 #include "IndependentWatchDog.h"
 #include <bsp-interface/di/console.h>
+#include <bsp-interface/TaskSingletonGetter.h>
 
 base::Hz bsp::IndependentWatchDog::InnerClockSourceFreq() const
 {
@@ -10,22 +11,12 @@ base::Hz bsp::IndependentWatchDog::InnerClockSourceFreq() const
 bsp::IndependentWatchDog &bsp::IndependentWatchDog::Instance()
 {
     class Getter :
-        public base::SingletonGetter<IndependentWatchDog>
+        public bsp::TaskSingletonGetter<IndependentWatchDog>
     {
     public:
         std::unique_ptr<IndependentWatchDog> Create() override
         {
             return std::unique_ptr<IndependentWatchDog>{new IndependentWatchDog{}};
-        }
-
-        void Lock() override
-        {
-            DI_DisableGlobalInterrupt();
-        }
-
-        void Unlock() override
-        {
-            DI_EnableGlobalInterrupt();
         }
     };
 
