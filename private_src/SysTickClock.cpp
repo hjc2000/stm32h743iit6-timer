@@ -18,7 +18,9 @@ extern "C"
         SysTick->CTRL;
         HAL_IncTick();
         bsp::SysTickClock::Instance().AddSystemTime();
-        if (bsp::SysTickClock::Instance()._elapsed_handler)
+
+        if (!DI_GlobalInterruptIsDisabled() &&
+            bsp::SysTickClock::Instance()._elapsed_handler)
         {
             bsp::SysTickClock::Instance()._elapsed_handler();
         }
