@@ -23,7 +23,7 @@ namespace bsp
         SysTickClock() = default;
 
         std::function<void()> _elapsed_handler;
-        base::Seconds _system_time = 0;
+        base::Seconds _system_time{0};
 
         friend void ::SysTick_Handler();
 
