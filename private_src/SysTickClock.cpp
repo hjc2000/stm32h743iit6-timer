@@ -19,7 +19,7 @@ extern "C"
         HAL_IncTick();
         bsp::SysTickClock::Instance().AddSystemTime();
 
-        if (!DI_GlobalInterruptIsDisabled() &&
+        if (!bsp::di::interrupt::GlobalInterruptIsDisabled() &&
             bsp::SysTickClock::Instance()._elapsed_handler)
         {
             bsp::SysTickClock::Instance()._elapsed_handler();
@@ -71,7 +71,7 @@ uint32_t bsp::SysTickClock::CurrentValue() const
 
 void bsp::SysTickClock::SetElapsedHandler(std::function<void()> func)
 {
-    bsp::GlobalInterruptGuard g;
+    bsp::di::interrupt::GlobalInterruptGuard g;
     _elapsed_handler = func;
 }
 
