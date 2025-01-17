@@ -61,7 +61,7 @@ void bsp::IndependentWatchDog::Open(std::chrono::milliseconds value)
 
 void bsp::IndependentWatchDog::Close()
 {
-    DI_Console().WriteError("看门狗一旦开启就无法关闭");
+    bsp::di::Console().WriteError("看门狗一旦开启就无法关闭");
 }
 
 std::chrono::milliseconds bsp::IndependentWatchDog::Timeout() const
