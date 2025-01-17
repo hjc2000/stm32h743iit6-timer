@@ -9,7 +9,7 @@ extern "C"
     /// @param ms 要延时的毫秒数。
     void HAL_Delay(uint32_t ms)
     {
-        DI_Delayer().Delay(std::chrono::milliseconds{ms});
+        bsp::di::Delayer().Delay(std::chrono::milliseconds{ms});
     }
 
     void SysTick_Handler()
