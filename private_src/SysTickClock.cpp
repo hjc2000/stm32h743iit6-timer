@@ -9,7 +9,7 @@ extern "C"
 	/// @param ms 要延时的毫秒数。
 	void HAL_Delay(uint32_t ms)
 	{
-		base::Delay(std::chrono::milliseconds{ms});
+		base::task::Delay(std::chrono::milliseconds{ms});
 	}
 
 	void SysTick_Handler()
